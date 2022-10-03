@@ -42,7 +42,7 @@
             }
         })
         .then(response => response.json())
-        .then((data) => { this.locations = data; console.log(data); });
+        .then((data) => { this.locations = data; console.log('update'); setTimeout(this.getStatus, 60000);});
       },
         calculateLight: function(location) {
             if(!location){
