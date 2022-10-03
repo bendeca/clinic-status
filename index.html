@@ -3,19 +3,22 @@
 <head>
   <title>Status Monitor Clinics</title>
   <script src="https://unpkg.com/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 </head>
 <body>
 <div id="app">
     <h1>Clinic Status Monitor</h1>
     <table class="status-table">
     <tr>
+        <th style="width:10%">Letztes Update</th>
         <th style="width:10%">Ampel</th>
         <th>CLinic</th>
         <th>Wartezeit</th>
         <th>Plattenservice</th>
         <th>Team Kapazität</th>
     </tr>
-    <tr v-for="location in this.locations">
+    <tr v-for="location in this.locations" :class="{ isOld: noUpdateToday(location.day) }">
+        <td>{{ getDate(location.day) }}</td>
         <td><span class="bulb" :class="calculateLight(location)"></span></td>
         <td>{{ location.name }}</td>
         <td>{{ location.waitingTimeInDays }} Tage</td>
@@ -43,6 +46,12 @@
         })
         .then(response => response.json())
         .then((data) => { this.locations = data; console.log('update'); setTimeout(this.getStatus, 60000);});
+      },
+      getDate: function(datetime) {
+        return moment(datetime, "YYYY-MM-DDThh:mm:ss.ssssZ").format("DD.MM.YYYY");
+      },
+      noUpdateToday: function(datetime) {
+        return !moment(datetime, "YYYY-MM-DD").isSame(moment(), 'day');
       },
         calculateLight: function(location) {
             if(!location){
@@ -95,5 +104,8 @@ td, th {
   border-radius: 50%;
   display: inline-block;
   vertical-align: middle;
+}
+.isOld {
+  background: lightgrey;
 }
     </style>
