@@ -45,7 +45,7 @@
             }
         })
         .then(response => response.json())
-        .then((data) => { this.locations = data; console.log('update'); setTimeout(this.getStatus, 60000);});
+        .then((data) => { this.locations = data; setTimeout(this.getStatus, 60000);});
       },
       getDate: function(datetime) {
         return moment(datetime, "YYYY-MM-DDThh:mm:ss.ssssZ").format("DD.MM.YYYY");
