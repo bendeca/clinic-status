@@ -1,21 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My first Vue app</title>
+  <title>Status Monitor Clinics</title>
   <script src="https://unpkg.com/vue@2"></script>
 </head>
 <body>
-  <div id="app">
-    {{ message }}
-  </div>
-
+<div id="app">
+    <h1>Clinic Status Monitor</h1>
+    <table class="status-table">
+    <tr>
+        <th style="width:10%">Ampel</th>
+        <th>CLinic</th>
+        <th>Wartezeit</th>
+        <th>Plattenservice</th>
+        <th>Team Kapazität</th>
+    </tr>
+    <tr v-for="location in this.locations">
+        <td><span class="bulb" :class="calculateLight(location)"></span></td>
+        <td>{{ location.name }}</td>
+        <td>{{ location.waitingTimeInDays }} Tage</td>
+        <td>{{ location.flatsService }}</td>
+        <td>{{ location.teamState }}%</td>
+    </tr>
+    </table>
+</div>
   <script>
     var app = new Vue({
       el: '#app',
       data: {
-        message: 'Hello Vue!'
+        locations: {}
+      },
+      mounted() {
+        this.getStatus();
+      },
+      methods: {
+        getStatus: async function() {
+        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status', {
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '633af289626b9c747864a96a'
+            }
+        })
+        .then(response => response.json())
+        .then((data) => { this.locations = data; console.log(data); });
+      },
+        calculateLight: function(location) {
+            if(!location){
+                return 'green';
+            }
+            if(location.waitingTimeInDays > 14) {
+                return 'red';
+            }
+            if(location.flatsService != 'sofort' && location.teamState < 100) {
+                return 'orange';
+            }
+            return 'green';
+        },
       }
     })
   </script>
 </body>
 </html>
+<style>
+    body {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+.status-table {
+  width: 100%;
+  text-align: left;
+  padding: 40px;
+}
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+.bulb.red {
+  background-color: red;
+}
+.bulb.green {
+  background-color: green;
+}
+.bulb.orange {
+  background-color: orange;
+}
+.bulb {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+}
+    </style>
