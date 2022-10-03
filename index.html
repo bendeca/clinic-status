@@ -38,7 +38,8 @@
       },
       methods: {
         getStatus: async function() {
-        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status', {
+        let today=moment();
+        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status?q={"day":{"$gte":{"$date":"$today"}}}&h={"$orderby":{"name":1}}', {
         headers: {
             'Content-Type': 'application/json',
             'x-apikey': '633af289626b9c747864a96a'
