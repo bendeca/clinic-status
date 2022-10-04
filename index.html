@@ -17,13 +17,13 @@
         <th>Plattenservice</th>
         <th>Team Kapazität</th>
     </tr>
-    <tr v-for="location in this.locations" :class="{ isOld: noUpdateToday(location.day) }">
-        <td>{{ getDate(location.day) }}</td>
+    <tr v-for="location in this.locations" :class="{ isOld: noUpdateToday(location) }">
+        <td>{{ getDate(location["MAX day"].day) }}</td>
         <td><span class="bulb" :class="calculateLight(location)"></span></td>
-        <td>{{ location.name }}</td>
-        <td>{{ location.waitingTimeInDays }} Tage</td>
-        <td>{{ location.flatsService }}</td>
-        <td>{{ location.teamState }}%</td>
+        <td>{{ location["MAX day"].name }}</td>
+        <td>{{ location["MAX day"].waitingTimeInDays }} Tage</td>
+        <td>{{ location["MAX day"].flatsService }}</td>
+        <td>{{ location["MAX day"].teamState }}%</td>
     </tr>
     </table>
 </div>
@@ -39,29 +39,29 @@
       methods: {
         getStatus: async function() {
         let today=moment();
-        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status?q={"day":{"$gte":{"$date":"$today"}}}&h={"$orderby":{"name":1}}', {
+        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status?q={}&h={%22$orderby%22:{%22name%22:1}}&groupby=name&aggregate=MAX:day', {
         headers: {
             'Content-Type': 'application/json',
             'x-apikey': '633af289626b9c747864a96a'
             }
         })
         .then(response => response.json())
-        .then((data) => { this.locations = data; setTimeout(this.getStatus, 60000);});
+        .then((data) => { this.locations = data; setTimeout(this.getStatus, 60000); });
       },
       getDate: function(datetime) {
         return moment(datetime, "YYYY-MM-DDThh:mm:ss.ssssZ").format("DD.MM.YYYY");
       },
-      noUpdateToday: function(datetime) {
-        return !moment(datetime, "YYYY-MM-DD").isSame(moment(), 'day');
+      noUpdateToday: function(location) {
+        return !moment(location["MAX day"].day, "YYYY-MM-DD").isSame(moment(), 'day');
       },
         calculateLight: function(location) {
             if(!location){
                 return 'green';
             }
-            if(location.waitingTimeInDays > 14) {
+            if(location["MAX day"].waitingTimeInDays > 14) {
                 return 'red';
             }
-            if(location.flatsService != 'sofort' && location.teamState < 100) {
+            if(location["MAX day"].flatsService != 'sofort' && location["MAX day"].teamState < 100) {
                 return 'orange';
             }
             return 'green';
