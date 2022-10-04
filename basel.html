@@ -36,10 +36,10 @@
 </div>
 <button class="btn btn-primary mb-3" @click="saveData">Speichern</button>
 </div>
-    <h2>Letzten 5 Einträge</h2>
+    <h2>Letzte 5 Einträge</h2>
     <table class="status-table">
     <tr>
-        <th style="width:10%">Letztes Update</th>
+        <th style="width:10%">Datum</th>
         <th style="width:10%">Ampel</th>
         <th>CLinic</th>
         <th>Wartezeit</th>
@@ -76,7 +76,7 @@
       },
       methods: {
         getStatus: async function() {
-        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status?q={"name":"Basel"}&max=5', {
+        fetch('https://veloplus-d6ee.restdb.io/rest/clinic-status?q={"name":"Basel"}&max=5&h={"$orderby":{"day":-1}}', {
         headers: {
             'Content-Type': 'application/json',
             'x-apikey': '633af289626b9c747864a96a'
