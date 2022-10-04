@@ -12,7 +12,7 @@
     <div class="clinic-input">
     <div class="mb-3">     
         <label for="waitingtime" class="form-label">Wartezeit für normaler Serivice, in Wochen</label>
-        <input id="waitingtime" type="text" v-model="newData.waitingTimeInDays" placeholder="e.g 2" class="form-control">
+        <input id="waitingtime" type="text" v-model="newData.waitingTimeInWeeks" placeholder="e.g 2" class="form-control">
     </div>
     <div class="mb-3">
         <label class="form-label" for="flats">Plattenservice möglich innerhalb x Stunden</label>
@@ -43,14 +43,16 @@
         <th>Wartezeit</th>
         <th>Plattenservice</th>
         <th>Team Kapazität</th>
+        <th>Kommentar</th>
     </tr>
     <tr v-for="location in this.locations">
         <td>{{ getDate(location.day) }}</td>
         <td><span class="bulb" :class="calculateLight(location)"></span></td>
         <td>{{ location.name }}</td>
-        <td>{{ location.waitingTimeInDays }} Tage</td>
+        <td>{{ location.waitingTimeInWeeks }} Wochen</td>
         <td>{{ location.flatsService }}</td>
         <td>{{ location.teamState }}%</td>
+        <td>{{ location.comment }}</td>
     </tr>
     </table>
 </div>
@@ -61,7 +63,7 @@
         newData: {
             day: moment(),
             name: 'Basel',
-            waitingTimeInDays: '',
+            waitingTimeInWeeks: '',
             flatsService: '',
             teamState: '',
         },
@@ -100,7 +102,7 @@
             if(!location){
                 return 'green';
             }
-            if(location.waitingTimeInDays > 14) {
+            if(location.waitingTimeInWeeks > 2) {
                 return 'red';
             }
             if(location.flatsService != 'sofort' && location.teamState < 100) {

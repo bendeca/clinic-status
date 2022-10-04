@@ -9,6 +9,7 @@
 <body>
 <div id="app">
     <h1>Clinic Status Monitor</h1>
+    <a href="/basel">Eingabe Beispiel Basel</a>
     <table class="status-table">
     <tr>
         <th style="width:10%">Letztes Update</th>
@@ -17,14 +18,16 @@
         <th>Wartezeit</th>
         <th>Plattenservice</th>
         <th>Team Kapazität</th>
+        <th>Kommentar</th>
     </tr>
     <tr v-for="location in this.locations" :class="{ isOld: noUpdateToday(location) }">
         <td>{{ getDate(location["MAX day"].day) }}</td>
         <td><span class="bulb" :class="calculateLight(location)"></span></td>
         <td>{{ location["MAX day"].name }}</td>
-        <td>{{ location["MAX day"].waitingTimeInDays }} Tage</td>
+        <td>{{ location["MAX day"].waitingTimeInWeeks }} Wochen</td>
         <td>{{ location["MAX day"].flatsService }}</td>
         <td>{{ location["MAX day"].teamState }}%</td>
+        <td>{{ location["MAX day"].comment }}</td>
     </tr>
     </table>
 </div>
@@ -59,7 +62,7 @@
             if(!location){
                 return 'green';
             }
-            if(location["MAX day"].waitingTimeInDays > 14) {
+            if(location["MAX day"].waitingTimeInWeeks > 2) {
                 return 'red';
             }
             if(location["MAX day"].flatsService != 'sofort' && location["MAX day"].teamState < 100) {
