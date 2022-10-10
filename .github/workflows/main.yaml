@@ -17,4 +17,4 @@ jobs:
       - name: Deployment
         run: |
           scp ${{ github.workspace }}/index.html veloplus@${{ secrets.SSH_HOST }}:~/www/helper.veloplus.ch/public/clinicstatus/index.html
-          scp ${{ github.workspace }}/basel.html veloplus@${{ secrets.SSH_HOST }}:~/www/helper.veloplus.ch/public/clinicstatus/basel.html
+          scp ${{ github.workspace }}/clinic.html veloplus@${{ secrets.SSH_HOST }}:~/www/helper.veloplus.ch/public/clinicstatus/clinic.html
