@@ -5,29 +5,29 @@
   <title>Status Monitor Clinics</title>
   <script src="https://unpkg.com/vue@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-</head>
+  <link rel="stylesheet" href="https://unpkg.com/microtip/microtip.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/css/uikit.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet"></head>
 <body>
 <div id="app">
-    <h1>Clinic Status Monitor</h1>
-    <a href="/clinicstatus/basel.html">Eingabe Beispiel Basel</a>
-    <table class="status-table">
+    <h1 class="uk-align-center">Clinic Status Monitor</h1>
+    <a class="uk-align-center" href="/clinicstatus/clinic.html?location=123456">Eingabe Beispiel Basel</a>
+    <table class="status-table uk-table uk-align-center">
     <tr>
-        <th style="width:10%">Letztes Update</th>
-        <th style="width:10%">Ampel</th>
+        <th class="tooltip" style="width:10%" aria-label="rot: Wartezeit >= 2 Wochen&#xa;orange: Wartezeit < 2 Wochen, Termine Heute: nein&#xa;grün: alles andere" data-microtip-position="bottom" role="tooltip">Ampel <i class="ri-information-line"></i></th>
         <th>Clinic</th>
+        <th>Heute freie Termine</th>
         <th>Wartezeit</th>
-        <th>Plattenservice</th>
-        <th>Team Kapazität</th>
-        <th>Kommentar</th>
+        <th>Kommentar  (Ferien, Absenzen, Krankheiten, etc.)</th>
+        <th style="width:10%">Letztes Update</th>
     </tr>
     <tr v-for="location in this.locations" :class="{ isOld: noUpdateToday(location) }">
-        <td>{{ getDate(location["MAX day"].day) }}</td>
         <td><span class="bulb" :class="calculateLight(location)"></span></td>
         <td>{{ location["MAX day"].name }}</td>
-        <td>{{ location["MAX day"].waitingTimeInWeeks }} Wochen</td>
-        <td>{{ location["MAX day"].flatsService }}</td>
-        <td>{{ location["MAX day"].teamState }}%</td>
+        <td>{{ location["MAX day"].freeToday }}</td>
+        <td>{{ location["MAX day"].waitingTime }} {{ location["MAX day"].waitingTimeUnit }}</td>
         <td>{{ location["MAX day"].comment }}</td>
+        <td>{{ getDate(location["MAX day"].day) }}</td>
     </tr>
     </table>
 </div>
@@ -59,13 +59,14 @@
         return !moment(location["MAX day"].day, "YYYY-MM-DD").isSame(moment(), 'day');
       },
         calculateLight: function(location) {
+            
             if(!location){
                 return 'green';
             }
-            if(location["MAX day"].waitingTimeInWeeks > 2) {
+            if(location["MAX day"].waitingTime > 2 && location["MAX day"].waitingTimeUnit == "Wochen") {
                 return 'red';
             }
-            if(location["MAX day"].flatsService != 'sofort' && location["MAX day"].teamState < 100) {
+            if(location["MAX day"].freeToday != 'ja') {
                 return 'orange';
             }
             return 'green';
@@ -80,19 +81,11 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 60px;
 }
-.status-table {
-  width: 100%;
-  text-align: left;
-  padding: 40px;
-}
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
+.tooltip::after {
+    white-space: pre !important;
 }
 .bulb.red {
   background-color: red;
