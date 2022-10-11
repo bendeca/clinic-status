@@ -29,7 +29,7 @@
         <td>{{ location["MAX day"].freeToday }}</td>
         <td>{{ location["MAX day"].waitingTime }} {{ location["MAX day"].waitingTimeUnit }}</td>
         <td>{{ location["MAX day"].comment }}</td>
-        <td>{{ getDate(location["MAX day"].day) }}</td>
+        <td><i style="color:green" class="ri-check-line" v-if="!noUpdateToday(location)"></i> <i style="color:orange" class="ri-alert-line" v-if="noUpdateToday(location)"></i> {{ getDate(location["MAX day"].day) }}</td>
     </tr>
     </table>
 </div>
