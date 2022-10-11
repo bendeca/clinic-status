@@ -148,13 +148,14 @@
         return moment(datetime, "YYYY-MM-DDThh:mm:ss.ssssZ").format("DD.MM.YYYY");
       },
         calculateLight: function(location) {
+            
             if(!location){
                 return 'green';
             }
-            if(location.waitingTime > 2) {
+            if(location["MAX day"].waitingTime > 2 && location["MAX day"].waitingTimeUnit == "Wochen") {
                 return 'red';
             }
-            if(location.freeToday != 'sofort' && location.teamState < 100) {
+            if(location["MAX day"].freeToday != 'ja') {
                 return 'orange';
             }
             return 'green';
