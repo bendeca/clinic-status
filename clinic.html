@@ -152,10 +152,10 @@
             if(!location){
                 return 'green';
             }
-            if(location["MAX day"].waitingTime > 2 && location["MAX day"].waitingTimeUnit == "Wochen") {
+            if(location.waitingTime > 2 && location.waitingTimeUnit == "Wochen") {
                 return 'red';
             }
-            if(location["MAX day"].freeToday != 'ja') {
+            if(location.freeToday != 'ja') {
                 return 'orange';
             }
             return 'green';
