@@ -1,0 +1,55 @@
+tr {
+  background-color: var(--background-body) !important;
+}
+body {
+  max-width: 1100px !important;
+}
+.tooltip::after {
+  white-space: pre !important;
+}
+.bulb.red {
+  background-color: red;
+}
+.bulb.green {
+  background-color: green;
+}
+.bulb.orange {
+  background-color: orange;
+}
+.bulb {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.isOld {
+  opacity: 0.6;
+}
+.message {
+  height: 50px;
+  position: relative;
+}
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+.spin::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px #cfd0d1;
+  border-bottom-color: #1c87c9;
+  border-radius: 50%;
+  content: "";
+  height: 40px;
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  transform: translate3d(-50%, -50%, 0);
+  width: 40px;
+  will-change: transform;
+}
