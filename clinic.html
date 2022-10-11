@@ -7,46 +7,47 @@
   <script src="https://unpkg.com/vue@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/microtip/microtip.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/css/uikit.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link href="/main.css" rel="stylesheet">
   </head>
 </head>
 <body>
 <div id="app">
-    <h1>Clinic Status {{ getLocation() }}</h1>
-    <form id="clinic-input" class="uk-form-stacked" @submit.prevent>
-    <div class="clinic-input">
-        <label for="waitingtime" class="uk-form-label">Wartezeit für normaler Serivice</label>
-        <input id="waitingtime" type="text" v-model="newData.waitingTime" placeholder="e.g 2" class="form-control uk-input uk-form-width-medium uk-margin-bottom" required>
-        <select class="uk-select uk-form-width-medium uk-margin-bottom" id="waitingTimeUnit" v-model="newData.waitingTimeUnit" required>
-            <option value="" selected disabled></option>
-            <option value="Wochen">Woche(n)</option>
-            <option value="Tage">Tag(e)</option>
-        </select>
-        <label class="uk-form-label" for="freeToday">Heute freie Termine</label>
-        <select class="uk-select uk-form-width-medium uk-margin-bottom" id="freeToday" v-model="newData.freeToday" required>
-            <option value="" selected disabled>Bitte wählen...</option>
-            <option value="ja">Ja</option>
-            <option value="nein">Nein</option>
-        </select>
-    <label class="uk-form-label" for="comment">Kommentar (Ferien, Absenzen, Krankheiten, etc.)</label>
-    <input class="uk-input uk-margin-bottom" id="comment" type="text" v-model="newData.comment" placeholder="Pascal fällt heute aus" class="form-control">
-<button class="uk-button uk-button-primary " @click="saveData" :disabled="loading">Speichern</button>
-</form>
+  <h1>Clinic Status {{ getLocation() }}</h1>
+  <form id="clinic-input" @submit.prevent @submit="saveData">
+    <label for="waitingtime">Wartezeit für normaler Serivice</label>
+    <div style="display:flex">
+      <input id="waitingtime" type="text" v-model="newData.waitingTime" placeholder="e.g 2" required />
+      <select id="waitingTimeUnit" v-model="newData.waitingTimeUnit" required />
+          <option value="" selected disabled>Tage / Wochen</option>
+          <option value="Tage">Tag(e)</option>
+          <option value="Wochen">Woche(n)</option>
+      </select>
+    </div>
+    <label for="freeToday">Heute freie Termine</label>
+    <select id="freeToday" v-model="newData.freeToday" required>
+        <option value="" selected disabled>Bitte wählen...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+    </select>
+    <label for="comment">Kommentar (Ferien, Absenzen, Krankheiten, etc.)</label>
+    <input id="comment" type="text" v-model="newData.comment" placeholder="Pascal fällt heute aus" />
+    <button type="submit" :disabled="loading">Speichern</button>
+  </form>
 <div class="message">
     <div class="spin" v-if="loading"></div>
     {{ message }}
   </div>
-</div>
     <h2>Letzte 5 Einträge</h2>
-    <table class="status-table uk-table">
+    <table>
     <tr>
         <th style="width:10%">Datum</th>
         <th class="tooltip" style="width:10%" aria-label="rot: Wartezeit >= 2 Wochen&#xa;orange: Wartezeit < 2 Wochen, Termine Heute: nein&#xa;grün: alles andere" data-microtip-position="right" role="tooltip">Ampel <i class="ri-information-line"></i></th>
         <th>Clinic</th>
         <th>Heute freie Termine</th>
         <th>Wartezeit</th>
-        <th>Kommentar  (Ferien, Absenzen, Krankheiten, etc.)</th>
+        <th style="width:33%">Kommentar  (Ferien, Absenzen, Krankheiten, etc.)</th>
     </tr>
     <tr v-for="location in this.locations">
         <td>{{ getDate(location.day) }}</td>
@@ -69,6 +70,7 @@
             waitingTime: '',
             freeToday: '',
             comment: '',
+            waitingTimeUnit: '',
         },
         locations: {},
         loading: false,
@@ -102,22 +104,27 @@
         })
         .then(response => response.json())
         .then((data) => { 
-            if (data.list && data.list.statuscode && (data.list.statuscode != '200' && data.list.statuscode != '201' )){
-                this.message = data.list.message;
+            if(data.status == 400) {
+              this.message = data.message;
             } else {
-                this.message = "Erfolgreich erfasst!";
-                this.newData = {
-                  day: moment(),
-                  name: this.getLocation(),
-                  waitingTime: '',
-                  freeToday: '',
-                  comment: '',
+              if (data.list && data.list.statuscode && (data.list.statuscode != '200' && data.list.statuscode != '201' )){
+                  this.message = data.list.message;
+              } else {
+                  this.message = "Erfolgreich erfasst!";
+                  this.newData = {
+                    day: moment(),
+                    name: this.getLocation(),
+                    waitingTime: '',
+                    freeToday: '',
+                    comment: '',
+                    waitingTimeUnit: '',
+                }
               }
             }
             setTimeout(this.resetMessage, 10000);
-            setTimeout(this.getStatus, 10000);
+            setTimeout(this.getStatus, 2000);
             this.loading = false;
-        });
+        }).catch(error => console.log(error.message));
       },
      getLocation: function() {
         var vars = {};
@@ -158,62 +165,3 @@
   </script>
 </body>
 </html>
-<style>
-    body {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-  padding: 0 5%;
-}
-.message{
-  height: 50px;
-  position: relative;
-}
-.tooltip::after {
-    white-space: pre !important;
-}
-.bulb.red {
-  background-color: red;
-}
-.bulb.green {
-  background-color: green;
-}
-.bulb.orange {
-  background-color: orange;
-}
-.bulb {
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  display: inline-block;
-  vertical-align: middle;
-}
-.isOld {
-  background: lightgrey;
-}
-@keyframes spinner {
-        0% {
-          transform: translate3d(-50%, -50%, 0) rotate(0deg);
-        }
-        100% {
-          transform: translate3d(-50%, -50%, 0) rotate(360deg);
-        }
-      }
-.spin::before {
-  animation: 1.5s linear infinite spinner;
-  animation-play-state: inherit;
-  border: solid 5px #cfd0d1;
-  border-bottom-color: #1c87c9;
-  border-radius: 50%;
-  content: "";
-  height: 40px;
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  transform: translate3d(-50%, -50%, 0);
-  width: 40px;
-  will-change: transform;
-}
-</style>

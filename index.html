@@ -6,19 +6,21 @@
   <script src="https://unpkg.com/vue@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/microtip/microtip.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/css/uikit.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+  <link rel="stylesheet" href="/main.css">
+
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet"></head>
 <body>
 <div id="app">
-    <h1 class="uk-align-center">Clinic Status Monitor</h1>
-    <a class="uk-align-center" href="/clinicstatus/clinic.html?location=123456">Eingabe Beispiel Basel</a>
-    <table class="status-table uk-table uk-align-center">
+    <h1>Clinic Status Monitor</h1>
+    <a href="/clinicstatus/clinic.html?location=123456">Eingabe Beispiel Basel</a>
+    <table>
     <tr>
         <th class="tooltip" style="width:10%" aria-label="rot: Wartezeit >= 2 Wochen&#xa;orange: Wartezeit < 2 Wochen, Termine Heute: nein&#xa;grün: alles andere" data-microtip-position="right" role="tooltip">Ampel <i class="ri-information-line"></i></th>
         <th>Clinic</th>
         <th>Heute freie Termine</th>
         <th>Wartezeit</th>
-        <th>Kommentar  (Ferien, Absenzen, Krankheiten, etc.)</th>
+        <th style="width:33%">Kommentar  (Ferien, Absenzen, Krankheiten, etc.)</th>
         <th style="width:10%">Letztes Update</th>
     </tr>
     <tr v-for="location in this.locations" :class="{ isOld: noUpdateToday(location) }">
@@ -76,34 +78,3 @@
   </script>
 </body>
 </html>
-<style>
-    body {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin: 60px;
-}
-.tooltip::after {
-    white-space: pre !important;
-}
-.bulb.red {
-  background-color: red;
-}
-.bulb.green {
-  background-color: green;
-}
-.bulb.orange {
-  background-color: orange;
-}
-.bulb {
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  display: inline-block;
-  vertical-align: middle;
-}
-.isOld {
-  background: lightgrey;
-}
-    </style>

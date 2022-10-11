@@ -18,3 +18,4 @@ jobs:
         run: |
           scp ${{ github.workspace }}/index.html veloplus@${{ secrets.SSH_HOST }}:~/www/helper.veloplus.ch/public/clinicstatus/index.html
           scp ${{ github.workspace }}/clinic.html veloplus@${{ secrets.SSH_HOST }}:~/www/helper.veloplus.ch/public/clinicstatus/clinic.html
+          scp ${{ github.workspace }}/main.css veloplus@${{ secrets.SSH_HOST }}:~/www/helper.veloplus.ch/public/clinicstatus/main.css
